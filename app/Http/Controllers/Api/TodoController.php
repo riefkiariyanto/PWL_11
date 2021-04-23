@@ -10,6 +10,7 @@ use App\Models\User;
 use Facade\FlareClient\Http\Response;
 use GuzzleHttp\Psr7\Request;
 
+
 class TodoController extends Controller
 {
     use ApiResponse;
@@ -20,12 +21,12 @@ class TodoController extends Controller
      */
     public function index()
     {
-        $user = auth()->user();
-        $todos = Todo::with('user')
-            ->where('user_id', $user->id)
-            ->get();
+            $user = auth()->user();
+            $todos = Todo::with('user')
+                ->where('user_id', $user->id)
+                ->get();
 
-        return $this->apiSuccess($todos);
+            return $this->apiSuccess($todos);
     }
 
     /**
@@ -34,16 +35,16 @@ class TodoController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(TodoRequest $request)
+     public function store(TodoRequest $request)
     {
-        $request->validated();
+            $request->validated();
 
-        $user = auth()->user();
-        $todo = new Todo($request->all());
-        $todo->user()->associate($user);
-        $todo->save();
+            $user = auth()->user();
+            $todo = new Todo($request->all());
+            $todo->user()->associate($user);
+            $todo->save();
 
-        return $this->apiSuccess($todo->load('user'));
+         return $this->apiSuccess($todo->load('user'));
     }
 
     /**
@@ -64,14 +65,14 @@ class TodoController extends Controller
      * @param  \App\Models\Todo  $todo
      * @return \Illuminate\Http\Response
      */
-    public function update(TodoRequest $request, Todo $todo)
+     public function update(TodoRequest $request, Todo $todo)
     {
-        $request->validated();
-        $todo->todo = $request->todo;
-        $todo->label = $request->label;
-        $todo->done = $request->done;
-        $todo->save();
-        return $this->apiSuccess($todo->load('user'));
+            $request->validated();
+            $todo->todo = $request->todo;
+            $todo->label = $request->label;
+            $todo->done = $request->done;
+            $todo->save();
+            return $this->apiSuccess($todo->load('user'));
     }
 
     /**
@@ -82,14 +83,14 @@ class TodoController extends Controller
      */
     public function destroy(Todo $todo)
     {
-        if(auth()->user()->id == $todo->user_id){
-            $todo->delete;
-            return $this->apiSuccess($todo);
-        }
+            if(auth()->user()->id == $todo->user_id){
+                $todo->delete;
+                return $this->apiSuccess($todo);
+            }
 
-        return $this->apiError(
-            'Unauthorized',
-            Response::HTTP_UNAUTHORIZED
-        );
+            return $this->apiError(
+                'Unauthorized',
+                Response::HTTP_UNAUTHORIZED
+            );  
     }
 }
